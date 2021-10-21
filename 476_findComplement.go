@@ -1,11 +1,17 @@
 package main
 
-import "fmt"
-
 func findComplement(num int) int {
-	return -1 ^ num
+	i := 31
+	pivit := int(^uint32(0)>>2) + 1
+	for ; i >= 0; i-- {
+		if (num | pivit) == num {
+			break
+		}
+		pivit >>= 1
+	}
+	pivit = (pivit << 1) - 1
+	return pivit ^ num
 }
 
 func main() {
-	fmt.Print(findComplement(5))
 }
