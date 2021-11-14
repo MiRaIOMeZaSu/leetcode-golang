@@ -1,33 +1,40 @@
 package main
 
+import "fmt"
+
 type Tree struct {
-	val   int
 	sum   int
 	nodes [26]*Tree
 }
 
 type MapSum struct {
 	// 使用字典树
-	root *Tree
+	stringMap map[string]int
+	root      *Tree
 }
 
 func Constructor() MapSum {
 	var mapSum MapSum
-	mapSum.root = &Tree{0, 0, [26]*Tree{}}
+	mapSum.root = &Tree{0, [26]*Tree{}}
+	mapSum.stringMap = make(map[string]int)
 	return mapSum
 }
 
 func (this *MapSum) Insert(key string, val int) {
 	curr := this.root
+	divide := val
+	if value, ok := this.stringMap[key]; ok {
+		divide -= value
+	}
+	this.stringMap[key] = val
 	for _, ch := range key {
 		index := ch - 'a'
 		if curr.nodes[index] == nil {
-			curr.nodes[index] = &Tree{0, 0, [26]*Tree{}}
+			curr.nodes[index] = &Tree{0, [26]*Tree{}}
 		}
-		curr.sum += val
 		curr = curr.nodes[index]
+		curr.sum += divide
 	}
-	curr.val = val
 }
 
 func (this *MapSum) Sum(prefix string) int {
@@ -48,3 +55,11 @@ func (this *MapSum) Sum(prefix string) int {
  * obj.Insert(key,val);
  * param_2 := obj.Sum(prefix);
  */
+
+func main() {
+	obj := Constructor()
+	obj.Insert("apple", 3)
+	fmt.Print(obj.Sum("ap"))
+	obj.Insert("app", 2)
+	fmt.Print(obj.Sum("ap"))
+}
