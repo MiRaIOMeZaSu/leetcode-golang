@@ -3,19 +3,12 @@ package main
 func maxDistance(colors []int) int {
 	// 求出每种颜色的位置
 	size := len(colors)
-	var houseColor map[int]([]int)
-	houseColor = make(map[int][]int)
-	for index, val := range colors {
-		if houseColor[val] == nil {
-			houseColor[val] = []int{}
-		}
-		houseColor[val] = append(houseColor[val], index)
-	}
-	ans := 0
-	for color, arr := range houseColor {
-		for i := 0; i < size; i++ {
-
+	for i := size - 1; i >= 1; i-- {
+		for j := 0; j+i < size; j++ {
+			if colors[j] != colors[j+i] {
+				return i
+			}
 		}
 	}
-	return ans
+	return 1
 }
