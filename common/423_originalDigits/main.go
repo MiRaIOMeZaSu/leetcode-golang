@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 func originalDigits(s string) string {
@@ -30,7 +31,7 @@ func originalDigits(s string) string {
 	for i := 0; i < len(words); i++ {
 		toMinus := letterCount[words[i][0][0]-'a']
 		if toMinus > 0 {
-			num, _ := strconv.Atoi(words[i][2])
+			num := words[i][2][0] - '0'
 			for j := 0; j < len(words[i][1]); j++ {
 				letterCount[words[i][1][j]-'a'] -= toMinus
 			}
@@ -39,9 +40,7 @@ func originalDigits(s string) string {
 	}
 	ans := ""
 	for i := 0; i < len(numsCount); i++ {
-		for j := 0; j < numsCount[i]; j++ {
-			ans += strconv.Itoa(i)
-		}
+		ans += strings.Repeat(strconv.Itoa(i), numsCount[i])
 	}
 	return ans
 }
