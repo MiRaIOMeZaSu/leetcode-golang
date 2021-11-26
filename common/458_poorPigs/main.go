@@ -22,10 +22,13 @@ func poorPigs(buckets int, minutesToDie int, minutesToTest int) int {
 	if buckets < 2 {
 		return 0
 	}
-	left := 1
+	times := minutesToTest / minutesToDie
+	if times+1 >= buckets {
+		return 1
+	}
+	left := 2
 	right := 10
 	ans := right
-	times := minutesToTest / minutesToDie
 	for left <= right {
 		// 判断能否满足要求
 		mid := (left + right) >> 1
@@ -43,9 +46,15 @@ func statify(buckets int, times int, pigs int) bool {
 	// 为什么会满足条件
 	currBuckets := buckets
 	lastBuckets := buckets
+	currTimes := times
 	currPigs := pigs
 	// 测试次数
-	for i := 0; i < times-1 && currPigs > 0; i++ {
+	// times超大情况下如何?
+	for currTimes-1 > currPigs {
+		buckets -= bits[currPigs-1]
+		currTimes--
+	}
+	for i := 0; i < currTimes-1 && currPigs > 0; i++ {
 		if bits[currPigs] >= currBuckets {
 			return true
 		} else {
