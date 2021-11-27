@@ -17,40 +17,27 @@ var member void
 type Solution struct {
 	// 使用集合存储已经反转过的数字
 	visited map[int]void
-	curr    int
-	m       int
 	n       int
 	border  int
-	rest    int
 }
 
 func Constructor(m int, n int) Solution {
 	rand.Seed(time.Now().Unix())
-	return Solution{make(map[int]void), 0, m, n, m * n, m * n}
+	return Solution{make(map[int]void), n, m * n}
 }
 
 func (this *Solution) Flip() []int {
-	currPercent := 1.0 / float64(this.rest)
 	for {
-		for i := this.curr; i < this.border; i++ {
-			if _, ok := this.visited[i]; ok {
-				continue
-			}
-			if rand.Float64() < currPercent {
-				this.curr = (i + 1) % this.border
-				this.rest--
-				this.visited[i] = member
-				return indexToPosition(this.n, i)
-			}
-			// 继续循环,更新currPercent
-			currPercent = 1.0 / float64(this.rest)
+		i := rand.Intn(this.border)
+		if _, ok := this.visited[i]; ok {
+			continue
 		}
-		this.curr = 0
+		this.visited[i] = member
+		return indexToPosition(this.n, i)
 	}
 }
 
 func (this *Solution) Reset() {
-	this.rest = this.border
 	this.visited = make(map[int]void)
 }
 
