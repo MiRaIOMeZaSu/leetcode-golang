@@ -1,16 +1,22 @@
 package main
 
+import "strings"
+
 func addSpaces(s string, spaces []int) string {
-	ans := ""
+	var builder strings.Builder
 	size := len(s)
 	spacesLen := len(spaces)
 	index := 0
 	for i := 0; i < size; i++ {
 		if index < spacesLen && i == spaces[index] {
-			ans += " "
+			builder.WriteString(" ")
 			index++
 		}
-		ans += string(s[i])
+		builder.WriteString(s[i:i])
 	}
-	return ans
+	return builder.String()
+}
+
+func main() {
+	addSpaces("LeetcodeHelpsMeLearn", []int{8, 13, 15})
 }
