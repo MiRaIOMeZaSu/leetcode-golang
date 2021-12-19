@@ -1,22 +1,26 @@
 package main
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
+
+var blank = " "
 
 func addSpaces(s string, spaces []int) string {
 	var builder strings.Builder
 	size := len(s)
 	spacesLen := len(spaces)
-	index := 0
-	for i := 0; i < size; i++ {
-		if index < spacesLen && i == spaces[index] {
-			builder.WriteString(" ")
-			index++
-		}
-		builder.WriteString(s[i:i])
+	lastIndex := 0
+	for i := 0; i < spacesLen; i++ {
+		builder.WriteString(s[lastIndex:spaces[i]])
+		lastIndex = spaces[i]
+		builder.WriteString(blank)
 	}
+	builder.WriteString(s[lastIndex:size])
 	return builder.String()
 }
 
 func main() {
-	addSpaces("LeetcodeHelpsMeLearn", []int{8, 13, 15})
+	fmt.Print(addSpaces("LeetcodeHelpsMeLearn", []int{8, 13, 15}))
 }
