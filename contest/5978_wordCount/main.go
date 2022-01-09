@@ -1,6 +1,8 @@
 package main
 
-import "sort"
+type void struct{}
+
+var member void
 
 var bits []int
 var bitsMap map[int]bool
@@ -18,7 +20,7 @@ func wordCount(startWords []string, targetWords []string) int {
 	}
 	startSize := len(startWords)
 	targetSize := len(targetWords)
-	startBits := sort.IntSlice{}
+	startBits := make(map[int]void)
 	piviot := "a"[0]
 	for i := 0; i < startSize; i++ {
 		bit := 0
@@ -26,7 +28,7 @@ func wordCount(startWords []string, targetWords []string) int {
 		for j := 0; j < wordSize; j++ {
 			bit |= bits[startWords[i][j]-piviot]
 		}
-		startBits = append(startBits, bit)
+		startBits[bit] = member
 	}
 	targetBits := []int{}
 	for i := 0; i < targetSize; i++ {
@@ -38,15 +40,12 @@ func wordCount(startWords []string, targetWords []string) int {
 		targetBits = append(targetBits, bit)
 	}
 	// 开始比较
-	sort.Sort(startBits)
 	ans := 0
 	for i := 0; i < targetSize; i++ {
 		target := targetBits[i]
-		for j := 0; j < startSize && startBits[j] < targetBits[i]; j++ {
-			start := startBits[j]
-			if (target | start) == target {
-				diff := target ^ start
-				if _, ok := bitsMap[diff]; ok && (diff|start) != start {
+		for j := 0; j < 26; j++ {
+			if bits[j]|target == target {
+				if _, ok := startBits[target^bits[j]]; ok {
 					ans += 1
 					break
 				}
@@ -57,7 +56,7 @@ func wordCount(startWords []string, targetWords []string) int {
 }
 
 func main() {
-	wordCount([]string{"uh"}, []string{"u", "hur", "k", "b", "u", "yse", "giqoy", "lni", "olqb", "nemc"})
-	// wordCount([]string{"ant", "act", "tack"}, []string{"tack", "act", "acti"})
+	// wordCount([]string{"uh"}, []string{"u", "hur", "k", "b", "u", "yse", "giqoy", "lni", "olqb", "nemc"})
+	wordCount([]string{"ant", "act", "tack"}, []string{"tack", "act", "acti"})
 	// wordCount([]string{"ab", "a"}, []string{"abc", "abcd"})
 }
