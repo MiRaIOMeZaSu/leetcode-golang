@@ -7,38 +7,71 @@ func abs(a int) int {
 	return -a
 }
 
-func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
-	// 先找平行的两点, 得出边
-	a := p1
-	points := [][]int{p1, p2, p3, p4}
-	length := 0
-	var b []int
-	for i := 1; i < 4; i++ {
-		if a[0] == points[i][0] {
-			length = abs(points[i][1] - p1[1])
-			b = points[i]
-		}
+func double(a int) int {
+	return a * a
+}
+
+func distance(p1 []int, p2 []int) int {
+	return double(p1[0]-p2[0]) + double(p1[1]-p2[1])
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
 	}
-	if length == 0 {
-		return false
-	}
-	diff := 0
-	for i := 1; i < 4; i++ {
-		if a[1] == points[i][1] && a[0] != points[i][0] {
-			diff = p1[1] - points[i][0]
-		}
-	}
-	if diff == 0 {
-		return false
-	}
-	for i := 1; i < 4; i++ {
-		if b[1] == points[i][1] && b[0] != points[i][0] {
-			return diff == b[0]-points[i][0]
+	return b
+}
+
+func switchPos(points []point, a, b int) {
+	old := points[a]
+	points[a] = points[b]
+	points[b] = old
+}
+
+type point struct {
+	_point   []int
+	distance int
+}
+
+func findSame(points []point) bool {
+	for i := 0; i < len(points); i++ {
+		for j := i + 1; j < len(points); j++ {
+			if points[i]._point[0] == points[j]._point[0] && points[i]._point[1] == points[j]._point[1] {
+				return true
+			}
 		}
 	}
 	return false
 }
 
+func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
+	// 从距离判断
+	a := p1
+	points := []point{point{p1, 0}, point{p2, 0}, point{p3, 0}, point{p4, 0}}
+	if findSame(points) {
+		return false
+	}
+	for i := 1; i < 4; i++ {
+		points[i].distance = distance(a, points[i]._point)
+	}
+	max := max(max(points[1].distance, points[2].distance), max(points[2].distance, points[3].distance))
+	if max == 0 {
+		return false
+	}
+	for i := 1; i < 4; i++ {
+		if points[i].distance == max && i != 3 {
+			switchPos(points, i, 3)
+		}
+	}
+	if points[1].distance+points[2].distance != points[3].distance {
+		return false
+	}
+	// 如何进一步判断
+	line1 := distance(points[1]._point, points[3]._point)
+	line2 := distance(points[2]._point, points[3]._point)
+	return line1 == line2 && line1 == points[1].distance
+}
+
 func main() {
-	validSquare([]int{1, 0}, []int{-1, 0}, []int{0, 1}, []int{0, -1})
+	validSquare([]int{1, 0}, []int{0, 1}, []int{0, -1}, []int{-1, 0})
 }
